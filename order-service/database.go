@@ -1,17 +1,17 @@
 package main
 
 type Database struct {
-	c     *Config
-	cache *Cache
+	config *Config
+	cache  *Cache
 }
 
-func CreateDatabase(c *Config) (*Database, error) {
+func CreateDatabase(config *Config) *Database {
 	cache := CreateCache()
 
 	db := Database{
-		c:     c,
-		cache: cache,
+		config: config,
+		cache:  cache,
 	}
 
-	return &db, nil
+	return &db
 }

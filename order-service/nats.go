@@ -1,28 +1,35 @@
 package main
 
 import (
-	"github.com/nats-io/nats.go"
+	"fmt"
 	"github.com/nats-io/stan.go"
 )
 
 type NATS struct {
-	nc *nats.Conn
-	sc stan.Conn
+	sc     stan.Conn
+	config *Config
+	db     *Database
 }
 
-func CreateNATS() *NATS {
-	n := NATS{}
+func CreateNATS(config *Config, db *Database) *NATS {
+	n := NATS{
+		config: config,
+		db:     db,
+	}
 
 	return &n
 }
 
-func (v *NATS) Run(c *Config) error {
-	nc, err := nats.Connect(c.NATSURL)
-	if err != nil {
-		return err
-	}
-	v.nc = nc
-	sc, err := stan.Connect(c.ClusterID, c.ClientID, stan.NatsConn(v.nc))
+func (v *NATS) Subscribe() error {
+	_, err := v.sc.Subscribe("foo", func(m *stan.Msg) {
+		fmt.Printf("Received a message: %s\n", string(m.Data))
+	})
+
+	return err
+}
+
+func (v *NATS) Connect() error {
+	sc, err := stan.Connect(v.config.ClusterID, v.config.ClientID, stan.NatsURL(v.config.NATSURL))
 	if err != nil {
 		return err
 	}
@@ -33,8 +40,5 @@ func (v *NATS) Run(c *Config) error {
 func (v *NATS) Close() {
 	if v.sc != nil {
 		v.sc.Close()
-	}
-	if v.nc != nil {
-		v.nc.Close()
 	}
 }

@@ -2,6 +2,6 @@
 
 IsProductionMode: true
 APIAddress: ":80"
-NATSURL: "nats"
-ClusterID: "main"
+NATSURL: "nats://nats:4222"
+ClusterID: "test-cluster"
 ClientID: "order-service"

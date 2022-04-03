@@ -1,8 +1,12 @@
-docker-data
+./docker-data
 .DS_Store
 
 # Go
-config.yml
+.order-service/config.yml
+.order-service/data
+
+.order-sender/config.yml
+.order-sender/data
 
 # local env files
 .env.local
