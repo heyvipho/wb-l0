@@ -2,6 +2,10 @@ version: '3.1'
 
 services:
 
+  nats:
+    image: nats-streaming:0.24.3-alpine3.15
+    restart: always
+
   #  ORDER SERVICE
 
   order-service:
@@ -12,10 +16,6 @@ services:
       - ./docker-data/order-service:/go/src/app/data
     ports:
       - 81:80
-
-  order-service-nats:
-    image: nats-streaming:0.24.3-alpine3.15
-    restart: always
 
   order-service-db:
     image: postgres:14.2-alpine3.15
