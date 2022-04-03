@@ -1,0 +1,7 @@
+# Create config.yml for changes
+
+IsProductionMode: true
+APIAddress: ":80"
+NATSURL: "nats://nats:4222"
+ClusterID: "test-cluster"
+ClientID: "order-service"
