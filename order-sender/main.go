@@ -13,10 +13,10 @@ func main() {
 	}
 
 	nats := CreateNATS(config)
-	//err = nats.Connect()
-	//if err != nil {
-	//	log.Panicln(err)
-	//}
+	err = nats.Connect()
+	if err != nil {
+		log.Panicln(err)
+	}
 	defer nats.Close()
 
 	api := CreateAPI(config, nats)
