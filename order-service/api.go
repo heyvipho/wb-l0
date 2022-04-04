@@ -35,7 +35,11 @@ func (v *API) Run() error {
 }
 
 func (v *API) getOrderHandler(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"id": c.Param("id"),
-	})
+	order, err := v.db.GetOrder(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{})
+		return
+	}
+
+	c.JSON(200, order)
 }

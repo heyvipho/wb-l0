@@ -11,6 +11,7 @@ type Config struct {
 	NATSURL          string
 	ClusterID        string
 	ClientID         string
+	DatabaseURL      string
 }
 
 func CreateConfig() (*Config, error) {

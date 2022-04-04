@@ -1,9 +1,9 @@
 create table orders
 (
-    id   serial
+    id   varchar not null
         constraint orders_pk
             primary key,
-    data text
+    json text
 );
 
 alter table orders

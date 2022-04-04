@@ -13,6 +13,11 @@ func main() {
 	}
 
 	db := CreateDatabase(config)
+	err = db.Connect()
+	if err != nil {
+		log.Panicln(err)
+	}
+	defer db.Close()
 
 	nats := CreateNATS(config, db)
 	err = nats.Connect()

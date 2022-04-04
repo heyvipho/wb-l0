@@ -1,8 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"github.com/nats-io/stan.go"
+	"log"
+)
+
+const (
+	NATS_SUBJECT_ORDER = "order"
 )
 
 type NATS struct {
@@ -21,8 +26,19 @@ func CreateNATS(config *Config, db *Database) *NATS {
 }
 
 func (v *NATS) Subscribe() error {
-	_, err := v.sc.Subscribe("foo", func(m *stan.Msg) {
-		fmt.Printf("Received a message: %s\n", string(m.Data))
+	_, err := v.sc.Subscribe(NATS_SUBJECT_ORDER, func(m *stan.Msg) {
+		var order Order
+		err := json.Unmarshal(m.Data, &order)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		err = v.db.AddOrder(order)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	})
 
 	return err
