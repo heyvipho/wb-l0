@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 )
 
 func main() {
@@ -11,6 +12,8 @@ func main() {
 	if err != nil {
 		log.Panicln(err)
 	}
+
+	os.Mkdir(config.DataDir, 0755)
 
 	db := CreateDatabase(config)
 	err = db.Connect()

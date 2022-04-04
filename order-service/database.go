@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/jackc/pgx/v4"
+	"log"
 )
 
 var ERR_DB_NOT_FOUND = errors.New("DB: Not found")
@@ -16,7 +17,8 @@ type Database struct {
 }
 
 func CreateDatabase(config *Config) *Database {
-	cache := CreateCache()
+	cache := CreateCache(config.CacheFile, 500)
+	cache.Restore()
 
 	db := Database{
 		config: config,
@@ -27,6 +29,15 @@ func CreateDatabase(config *Config) *Database {
 }
 
 func (v *Database) GetOrder(id string) (Order, error) {
+	cachedOrder := v.cache.Get(id)
+	if cachedOrder != nil {
+		v, ok := cachedOrder.(Order)
+		if ok {
+			log.Printf("Данные по заказу (id: %v) получены из КЭША", id)
+			return v, nil
+		}
+	}
+
 	var order Order
 
 	var jsonObj []byte
@@ -40,6 +51,9 @@ func (v *Database) GetOrder(id string) (Order, error) {
 		return order, err
 	}
 
+	v.cache.Set(id, order)
+
+	log.Printf("Данные по заказу (id: %v) получены из БАЗЫ ДАННЫХ", id)
 	return order, nil
 }
 

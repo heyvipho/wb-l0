@@ -12,6 +12,8 @@ type Config struct {
 	ClusterID        string
 	ClientID         string
 	DatabaseURL      string
+	CacheFile        string
+	DataDir          string
 }
 
 func CreateConfig() (*Config, error) {
