@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type API struct {
@@ -35,7 +37,28 @@ func (v *API) Run() error {
 }
 
 func (v *API) postOrderHandler(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"id": c.Param("id"),
+	jsonData, err := c.GetRawData()
+	if err != nil {
+		log.Println(err)
+		c.JSON(500, gin.H{})
+		return
+	}
+
+	var order Order
+	err = json.Unmarshal(jsonData, &order)
+	if err != nil {
+		c.JSON(400, gin.H{})
+		return
+	}
+
+	err = v.nats.PublishOrder(order)
+	if err != nil {
+		log.Println(err)
+		c.JSON(500, gin.H{})
+		return
+	}
+
+	c.JSON(201, gin.H{
+		"id": 0,
 	})
 }

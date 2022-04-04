@@ -1,7 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/nats-io/stan.go"
+)
+
+const (
+	NATS_SUBJECT_ORDER = "order"
 )
 
 type NATS struct {
@@ -15,6 +20,17 @@ func CreateNATS(config *Config) *NATS {
 	}
 
 	return &n
+}
+
+func (v *NATS) PublishOrder(obj Order) error {
+	jsonObj, err := json.Marshal(obj)
+	if err != nil {
+		return err
+	}
+
+	err = v.sc.Publish(NATS_SUBJECT_ORDER, jsonObj)
+
+	return err
 }
 
 func (v *NATS) Connect() error {

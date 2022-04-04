@@ -67,13 +67,16 @@
         try {
           const response = await fetch("/api/order", {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            body: JSON.stringify({
-              json: myCodeMirror.getValue(),
-            }) // body data type must match "Content-Type" header
+            body: myCodeMirror.getValue(), // body data type must match "Content-Type" header
           });
-          const json = await response.json()
-          alert("ID: " + json.id)
+          if (!response.ok) {
+            alert("Сервер вернул ошибку: " + response.status)
+            return
+          }
+          // const json = await response.json()
+          alert("Успешно отправлено")
         } catch (e) {
+          console.log(e)
           alert("Произошла ошибка")
         }
       })
